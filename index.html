@@ -8,539 +8,136 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F7F6F2;
-    --surface: #FFFFFF;
-    --border: #E4E2DA;
-    --border-focus: #1A1A1A;
-    --text-primary: #1A1A1A;
-    --text-secondary: #6B6A65;
-    --text-hint: #A8A7A2;
-    --accent: #1A1A1A;
-    --accent-light: #F0EFE9;
-    --green: #1D9E75;
-    --green-bg: #E1F5EE;
-    --amber: #BA7517;
-    --amber-bg: #FAEEDA;
-    --red: #A32D2D;
-    --red-bg: #FCEBEB;
-    --radius: 14px;
-    --radius-sm: 8px;
+    --bg: #F7F6F2; --surface: #FFFFFF; --border: #E4E2DA; --border-focus: #1A1A1A;
+    --text-primary: #1A1A1A; --text-secondary: #6B6A65; --text-hint: #A8A7A2;
+    --accent: #1A1A1A; --accent-light: #F0EFE9;
+    --green: #1D9E75; --green-bg: #E1F5EE;
+    --amber: #BA7517; --amber-bg: #FAEEDA;
+    --red: #A32D2D; --red-bg: #FCEBEB;
+    --radius: 14px; --radius-sm: 8px;
   }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; padding-bottom: 40px; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 20px 14px; position: sticky; top: 0; z-index: 10; }
+  .header-inner { max-width: 480px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-mark span { color: white; font-size: 12px; font-weight: 700; }
+  .header-text h1 { font-size: 15px; font-weight: 700; }
+  .header-text p { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
 
-  body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
-
-  /* ヘッダー */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px 14px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .header-inner {
-    max-width: 480px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .logo-mark {
-    width: 32px;
-    height: 32px;
-    background: var(--accent);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .logo-mark span {
-    color: white;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .header-text h1 {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  .header-text p {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-top: 1px;
-  }
-
-  /* ステップインジケーター */
-  .steps {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px 20px 0;
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
-  .step-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    flex: 1;
-    position: relative;
-  }
-
-  .step-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 13px;
-    left: 50%;
-    width: 100%;
-    height: 1px;
-    background: var(--border);
-    z-index: 0;
-  }
-
+  .steps { max-width: 480px; margin: 0 auto; padding: 20px 20px 0; display: flex; align-items: center; }
+  .step-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; position: relative; }
+  .step-item:not(:last-child)::after { content: ''; position: absolute; top: 13px; left: 50%; width: 100%; height: 1px; background: var(--border); z-index: 0; }
   .step-item.done:not(:last-child)::after { background: var(--green); }
-
-  .step-dot {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-hint);
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s;
-  }
-
-  .step-item.active .step-dot {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  .step-item.done .step-dot {
-    background: var(--green);
-    border-color: var(--green);
-    color: white;
-    font-size: 12px;
-  }
-
-  .step-label {
-    font-size: 10px;
-    color: var(--text-hint);
-    white-space: nowrap;
-  }
-
+  .step-dot { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--text-hint); position: relative; z-index: 1; transition: all 0.3s; }
+  .step-item.active .step-dot { background: var(--accent); border-color: var(--accent); color: white; }
+  .step-item.done .step-dot { background: var(--green); border-color: var(--green); color: white; }
+  .step-label { font-size: 10px; color: var(--text-hint); white-space: nowrap; }
   .step-item.active .step-label { color: var(--text-primary); font-weight: 500; }
   .step-item.done .step-label { color: var(--green); }
 
-  /* メインコンテンツ */
-  .main {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  /* カード */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .card-header {
-    padding: 16px 18px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .card-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-sm);
-    background: var(--accent-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin-bottom: 3px;
-  }
-
-  .card-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
+  .main { max-width: 480px; margin: 0 auto; padding: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
+  .card-header { padding: 16px 18px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+  .card-icon { width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
   .card-body { padding: 18px; }
 
-  /* アップロードゾーン */
-  .upload-zone {
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius-sm);
-    padding: 24px 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--bg);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
+  .notice-banner { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .notice-banner-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+  .notice-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .notice-item:last-child { margin-bottom: 0; }
+  .notice-check { width: 28px; height: 28px; background: var(--green-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .notice-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+  .notice-text strong { color: var(--text-primary); }
 
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: var(--radius-sm); padding: 24px 16px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .upload-zone:active { background: var(--accent-light); border-color: var(--accent); }
   .upload-zone.has-file { border-style: solid; border-color: var(--green); background: var(--green-bg); }
   .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-
-  .upload-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    transition: all 0.2s;
-  }
-
-  .has-file .upload-icon {
-    background: var(--green);
-    border-color: var(--green);
-    font-size: 16px;
-  }
-
-  .upload-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-  }
-
-  .upload-sub {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-
+  .upload-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .has-file .upload-icon { background: var(--green); border-color: var(--green); font-size: 16px; }
+  .upload-label { font-size: 14px; font-weight: 500; }
+  .upload-sub { font-size: 12px; color: var(--text-secondary); }
   .has-file .upload-label { color: var(--green); }
 
-  /* プレビュー */
-  .preview-area {
-    display: none;
-    margin-top: 12px;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    position: relative;
-  }
-
+  .preview-area { display: none; margin-top: 12px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); position: relative; }
   .preview-area.visible { display: block; }
+  .preview-area img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+  .preview-change { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor: pointer; border: none; font-family: inherit; }
 
-  .preview-area img {
-    width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-    display: block;
-  }
+  .ocr-result { display: none; margin-top: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); overflow: hidden; }
+  .ocr-result.visible { display: block; }
+  .ocr-result-header { padding: 10px 14px; background: var(--accent-light); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .ocr-result-body { padding: 12px 14px; }
+  .ocr-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .ocr-row:last-child { border-bottom: none; }
+  .ocr-key { font-size: 12px; color: var(--text-secondary); }
+  .ocr-val { font-size: 13px; font-weight: 500; font-family: 'DM Mono', monospace; }
+  .ocr-val.ok { color: var(--green); }
+  .ocr-val.warn { color: var(--amber); }
+  .ocr-val.err { color: var(--red); }
+  .ocr-loading { padding: 16px; text-align: center; font-size: 13px; color: var(--text-secondary); }
 
-  .preview-change {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-  }
+  .alert-box { margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-sm); display: flex; gap: 10px; align-items: flex-start; }
+  .alert-box.warn { background: var(--amber-bg); border: 1px solid #FAC775; }
+  .alert-box.err { background: var(--red-bg); border: 1px solid #F09595; }
+  .alert-box.ok { background: var(--green-bg); border: 1px solid #9FE1CB; }
+  .alert-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .alert-text { font-size: 12px; line-height: 1.6; font-weight: 500; }
+  .alert-box.warn .alert-text { color: var(--amber); }
+  .alert-box.err .alert-text { color: var(--red); }
+  .alert-box.ok .alert-text { color: var(--green); }
 
-  /* ヒントボックス */
-  .hint-box {
-    background: var(--amber-bg);
-    border: 1px solid #FAC775;
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    margin-top: 14px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
+  .hint-box { background: var(--amber-bg); border: 1px solid #FAC775; border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 14px; display: flex; gap: 10px; }
   .hint-box-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .hint-box-text { font-size: 12px; color: var(--amber); line-height: 1.6; font-weight: 500; }
 
-  .hint-box-text {
-    font-size: 12px;
-    color: var(--amber);
-    line-height: 1.6;
-    font-weight: 500;
-  }
-
-  /* テキストフィールド */
   .field-group { margin-bottom: 16px; }
-
-  .field-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .field-required {
-    display: inline-block;
-    font-size: 10px;
-    background: var(--red-bg);
-    color: var(--red);
-    padding: 1px 5px;
-    border-radius: 4px;
-    margin-left: 4px;
-    vertical-align: middle;
-  }
-
-  .field-input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-family: 'Noto Sans JP', sans-serif;
-    color: var(--text-primary);
-    background: var(--surface);
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-
+  .field-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+  .field-required { display: inline-block; font-size: 10px; background: var(--red-bg); color: var(--red); padding: 1px 5px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+  .field-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: 'Noto Sans JP', sans-serif; color: var(--text-primary); background: var(--surface); outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
   .field-input:focus { border-color: var(--border-focus); }
   .field-input::placeholder { color: var(--text-hint); }
 
-  /* 区切り線 */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 16px 0;
-  }
-
-  /* 情報確認セクション */
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-  }
-
+  .info-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
   .info-row:last-child { border-bottom: none; }
-
-  .info-key {
-    font-size: 12px;
-    color: var(--text-secondary);
-    flex-shrink: 0;
-  }
-
-  .info-val {
-    font-size: 13px;
-    font-weight: 500;
-    text-align: right;
-    font-family: 'DM Mono', monospace;
-  }
-
+  .info-key { font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+  .info-val { font-size: 13px; font-weight: 500; text-align: right; font-family: 'DM Mono', monospace; }
   .info-val.ok { color: var(--green); }
-  .info-val.warn { color: var(--amber); }
-  .info-val.err { color: var(--red); }
 
-  /* 同意チェック */
-  .agree-box {
-    background: var(--bg);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    margin-bottom: 16px;
-  }
-
+  .agree-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 14px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: border-color 0.2s; margin-bottom: 16px; }
   .agree-box.checked { border-color: var(--green); background: var(--green-bg); }
-
-  .agree-checkbox {
-    width: 20px;
-    height: 20px;
-    border: 1.5px solid var(--border);
-    border-radius: 5px;
-    background: var(--surface);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: transparent;
-    transition: all 0.2s;
-    margin-top: 1px;
-  }
-
-  .agree-box.checked .agree-checkbox {
-    background: var(--green);
-    border-color: var(--green);
-    color: white;
-  }
-
-  .agree-text {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-  }
-
+  .agree-checkbox { width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 5px; background: var(--surface); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; transition: all 0.2s; margin-top: 1px; }
+  .agree-box.checked .agree-checkbox { background: var(--green); border-color: var(--green); color: white; }
+  .agree-text { font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
   .agree-text strong { color: var(--text-primary); }
 
-  /* 送信ボタン */
-  .btn-submit {
-    width: 100%;
-    padding: 16px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 700;
-    font-family: 'Noto Sans JP', sans-serif;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    transition: opacity 0.15s, transform 0.1s;
-    -webkit-appearance: none;
-  }
-
+  .btn-submit { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; transition: opacity 0.15s, transform 0.1s; -webkit-appearance: none; }
   .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
   .btn-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-secondary { width: 100%; padding: 14px; background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; margin-top: 10px; -webkit-appearance: none; }
 
-  .btn-secondary {
-    width: 100%;
-    padding: 14px;
-    background: transparent;
-    color: var(--text-secondary);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'Noto Sans JP', sans-serif;
-    cursor: pointer;
-    margin-top: 10px;
-    -webkit-appearance: none;
-  }
-
-  /* ページ管理 */
   .page { display: none; }
   .page.active { display: block; }
 
-  /* 完了画面 */
-  .complete-hero {
-    text-align: center;
-    padding: 40px 20px 30px;
-  }
+  .complete-hero { text-align: center; padding: 40px 20px 30px; }
+  .complete-icon { width: 72px; height: 72px; background: var(--green-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; }
+  .complete-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+  .complete-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+  .complete-number { font-family: 'DM Mono', monospace; background: var(--accent-light); border-radius: var(--radius-sm); padding: 14px 18px; margin: 20px 0; text-align: center; }
+  .complete-number-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .complete-number-val { font-size: 20px; font-weight: 500; letter-spacing: 0.1em; }
 
-  .complete-icon {
-    width: 72px;
-    height: 72px;
-    background: var(--green-bg);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    margin: 0 auto 20px;
-  }
-
-  .complete-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 10px;
-  }
-
-  .complete-desc {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
-
-  .complete-number {
-    font-family: 'DM Mono', monospace;
-    background: var(--accent-light);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-    margin: 20px 0;
-    text-align: center;
-  }
-
-  .complete-number-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-bottom: 4px;
-  }
-
-  .complete-number-val {
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-  }
-
-  /* アニメーション */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .page.active > * {
-    animation: fadeUp 0.35s ease both;
-  }
-
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .page.active > * { animation: fadeUp 0.35s ease both; }
   .page.active > *:nth-child(2) { animation-delay: 0.05s; }
   .page.active > *:nth-child(3) { animation-delay: 0.1s; }
-  .page.active > *:nth-child(4) { animation-delay: 0.15s; }
-
-  /* セーフエリア対応 */
   .bottom-pad { height: env(safe-area-inset-bottom, 16px); }
+  .dot-anim::after { content: ''; animation: dots 1.2s steps(3, end) infinite; }
+  @keyframes dots { 0%{content:''} 33%{content:'.'} 66%{content:'..'} 100%{content:'...'} }
 </style>
 </head>
 <body>
@@ -555,36 +152,43 @@
   </div>
 </div>
 
-<!-- ステップインジケーター -->
 <div class="steps" id="steps">
-  <div class="step-item active" id="step-1">
-    <div class="step-dot">1</div>
-    <div class="step-label">基本情報</div>
-  </div>
-  <div class="step-item" id="step-2">
-    <div class="step-dot">2</div>
-    <div class="step-label">パスポート</div>
-  </div>
-  <div class="step-item" id="step-3">
-    <div class="step-dot">3</div>
-    <div class="step-label">振込明細</div>
-  </div>
-  <div class="step-item" id="step-4">
-    <div class="step-dot">4</div>
-    <div class="step-label">確認・送信</div>
-  </div>
+  <div class="step-item active" id="step-1"><div class="step-dot">1</div><div class="step-label">基本情報</div></div>
+  <div class="step-item" id="step-2"><div class="step-dot">2</div><div class="step-label">パスポート</div></div>
+  <div class="step-item" id="step-3"><div class="step-dot">3</div><div class="step-label">振込明細</div></div>
+  <div class="step-item" id="step-4"><div class="step-dot">4</div><div class="step-label">確認・送信</div></div>
 </div>
 
 <div class="main">
 
+  <!-- ページ0: 事前確認 -->
+  <div class="page active" id="page-0">
+    <div class="notice-banner">
+      <div class="notice-banner-title">📋 提出前にご確認ください</div>
+      <div class="notice-item">
+        <div class="notice-check">🛂</div>
+        <div class="notice-text"><strong>パスポートの顔写真ページ</strong>の画像が必要です。氏名・生年月日・有効期限が記載されているページをご用意ください。</div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-check">🏦</div>
+        <div class="notice-text"><strong>銀行振込の明細画像</strong>が必要です。振込名義・金額・日付が確認できる銀行アプリのスクリーンショットで大丈夫です。</div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-check">📱</div>
+        <div class="notice-text">画像は<strong>カメラで撮影</strong>するか、<strong>写真ライブラリから選択</strong>できます（iOS・Android両対応）。</div>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="goTo(1)">準備ができたら始める</button>
+  </div>
+
   <!-- ページ1: 基本情報 -->
-  <div class="page active" id="page-1">
+  <div class="page" id="page-1">
     <div class="card">
       <div class="card-header">
         <div class="card-icon">👤</div>
         <div>
           <div class="card-title">基本情報の入力</div>
-          <div class="card-desc">生徒のお名前と参加プログラムを確認してください</div>
+          <div class="card-desc">生徒のお名前と参加プログラムを入力してください</div>
         </div>
       </div>
       <div class="card-body">
@@ -601,17 +205,13 @@
           <input class="field-input" type="text" id="parent-name" placeholder="例：山田 花子" inputmode="text">
         </div>
         <div class="field-group">
-          <label class="field-label">連絡先メールアドレス</label>
+          <label class="field-label">連絡先メールアドレス<span class="field-required">必須</span></label>
           <input class="field-input" type="email" id="email" placeholder="example@email.com" inputmode="email">
         </div>
         <div class="field-group">
           <label class="field-label">参加コース<span class="field-required">必須</span></label>
           <select class="field-input" id="course">
             <option value="">選択してください</option>
-            <option>フィリピン（セブ島）</option>
-            <option>マレーシア（クアラルンプール）</option>
-            <option>シンガポール</option>
-            <option>カンボジア（プノンペン）</option>
           </select>
         </div>
       </div>
@@ -626,25 +226,36 @@
         <div class="card-icon">🛂</div>
         <div>
           <div class="card-title">パスポートの撮影</div>
-          <div class="card-desc">顔写真ページ（氏名・生年月日・有効期限が記載されているページ）を撮影してください</div>
+          <div class="card-desc">顔写真ページを撮影またはライブラリから選択してください</div>
         </div>
       </div>
       <div class="card-body">
         <label class="upload-zone" id="passport-zone">
-          <input type="file" accept="image/*" capture="environment" id="passport-file" onchange="handleUpload(event,'passport')">
+          <input type="file" accept="image/*" id="passport-file" onchange="handleUpload(event,'passport')">
           <div class="upload-icon" id="passport-icon">📷</div>
-          <div class="upload-label" id="passport-label">タップして撮影・選択</div>
+          <div class="upload-label" id="passport-label">タップして撮影 / ライブラリから選択</div>
           <div class="upload-sub" id="passport-sub">JPG・PNG・HEICに対応</div>
         </label>
         <div class="preview-area" id="passport-preview">
           <img id="passport-img" src="" alt="パスポートプレビュー">
           <button class="preview-change" onclick="resetUpload('passport')">撮り直す</button>
         </div>
+        <div class="ocr-result" id="ocr-result">
+          <div class="ocr-result-header">
+            <span id="ocr-status-icon">🔍</span>
+            <span id="ocr-status-text">読み取り中<span class="dot-anim"></span></span>
+          </div>
+          <div class="ocr-result-body" id="ocr-body">
+            <div class="ocr-loading">画像を解析しています...</div>
+          </div>
+        </div>
+        <div class="alert-box" id="expiry-alert" style="display:none">
+          <div class="alert-icon" id="expiry-alert-icon"></div>
+          <div class="alert-text" id="expiry-alert-text"></div>
+        </div>
         <div class="hint-box">
           <div class="hint-box-icon">💡</div>
-          <div class="hint-box-text">
-            光が反射しないよう、明るい場所で真上から撮影してください。文字が読める鮮明な画像をお願いします。
-          </div>
+          <div class="hint-box-text">光が反射しないよう、明るい場所で真上から撮影してください。文字がはっきり読める画像をお願いします。</div>
         </div>
       </div>
     </div>
@@ -659,14 +270,14 @@
         <div class="card-icon">🏦</div>
         <div>
           <div class="card-title">振込明細の提出</div>
-          <div class="card-desc">銀行アプリの振込完了画面または通帳のスクリーンショットをアップロードしてください</div>
+          <div class="card-desc">銀行アプリの振込完了画面またはスクリーンショットを選択してください</div>
         </div>
       </div>
       <div class="card-body">
         <label class="upload-zone" id="transfer-zone">
-          <input type="file" accept="image/*" capture="environment" id="transfer-file" onchange="handleUpload(event,'transfer')">
+          <input type="file" accept="image/*" id="transfer-file" onchange="handleUpload(event,'transfer')">
           <div class="upload-icon" id="transfer-icon">📱</div>
-          <div class="upload-label" id="transfer-label">タップしてスクリーンショット選択</div>
+          <div class="upload-label" id="transfer-label">タップして撮影 / ライブラリから選択</div>
           <div class="upload-sub" id="transfer-sub">振込名義・金額・日付が含まれる画面</div>
         </label>
         <div class="preview-area" id="transfer-preview">
@@ -675,9 +286,7 @@
         </div>
         <div class="hint-box">
           <div class="hint-box-icon">💡</div>
-          <div class="hint-box-text">
-            振込名義・金額・取引日が確認できる画面を提出してください。銀行アプリの明細詳細画面が最適です。
-          </div>
+          <div class="hint-box-text">振込名義・金額・取引日が確認できる画面を提出してください。銀行アプリの明細詳細画面が最適です。</div>
         </div>
       </div>
     </div>
@@ -696,32 +305,17 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="info-row">
-          <div class="info-key">生徒氏名</div>
-          <div class="info-val" id="confirm-name">—</div>
-        </div>
-        <div class="info-row">
-          <div class="info-key">参加コース</div>
-          <div class="info-val" id="confirm-course">—</div>
-        </div>
-        <div class="info-row">
-          <div class="info-key">パスポート</div>
-          <div class="info-val ok" id="confirm-passport">提出済み ✓</div>
-        </div>
-        <div class="info-row">
-          <div class="info-key">振込明細</div>
-          <div class="info-val ok" id="confirm-transfer">提出済み ✓</div>
-        </div>
+        <div class="info-row"><div class="info-key">生徒氏名</div><div class="info-val" id="confirm-name">—</div></div>
+        <div class="info-row"><div class="info-key">参加コース</div><div class="info-val" id="confirm-course">—</div></div>
+        <div class="info-row"><div class="info-key">メールアドレス</div><div class="info-val" id="confirm-email">—</div></div>
+        <div class="info-row"><div class="info-key">パスポート</div><div class="info-val ok">提出済み ✓</div></div>
+        <div class="info-row"><div class="info-key">振込明細</div><div class="info-val ok">提出済み ✓</div></div>
       </div>
     </div>
-
     <div class="agree-box" id="agree-box" onclick="toggleAgree()">
       <div class="agree-checkbox" id="agree-check">✓</div>
-      <div class="agree-text">
-        提出した画像は<strong>very50事務局のみ</strong>が確認します。個人情報は本プログラムの運営目的以外には使用しません。上記に同意して送信します。
-      </div>
+      <div class="agree-text">提出した画像は<strong>very50事務局のみ</strong>が確認します。個人情報は本プログラムの運営目的以外には使用しません。上記に同意して送信します。</div>
     </div>
-
     <button class="btn-submit" id="submit-btn" onclick="submitForm()" disabled>送信する</button>
     <button class="btn-secondary" onclick="goTo(3)">戻る</button>
   </div>
@@ -736,9 +330,9 @@
         <div class="complete-number-label">受付番号</div>
         <div class="complete-number-val" id="receipt-number">—</div>
       </div>
-      <div class="complete-desc" style="font-size:12px; color: #A8A7A2;">
-        ※ 通常3営業日以内にご連絡します<br>
-        ※ 不備があった場合はLINEで個別にご連絡します
+      <div class="complete-desc" style="font-size:12px; color: #A8A7A2; margin-top: 8px;">
+        ※ 確認メールを入力したアドレスに送信しました<br>
+        ※ 通常3営業日以内にLINEでご連絡します
       </div>
     </div>
   </div>
@@ -747,26 +341,42 @@
 <div class="bottom-pad"></div>
 
 <script>
-  const state = {
-    passport: null,
-    transfer: null,
-    agreed: false
-  };
+  // ================================================================
+  // ★ コース設定 ★
+  // ここを変更するだけでコース選択肢が変わります
+  const COURSES = [
+    'マレーシア（クアラルンプール）',
+    'カンボジア（シェムリアップ）',
+  ];
+  // ================================================================
+
+  const WEBHOOK_URL = 'https://hook.eu1.make.com/mgytkgcv6sr86qubz25h0v78qcxlo5d9';
+
+  const state = { passport: null, transfer: null, agreed: false };
+
+  // コース選択肢を動的に生成
+  window.addEventListener('DOMContentLoaded', () => {
+    const sel = document.getElementById('course');
+    COURSES.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  });
 
   function goTo(page) {
-    // 入力チェック（ページ1）
     if (page === 2) {
       const name = document.getElementById('student-name').value.trim();
       const kana = document.getElementById('student-kana').value.trim();
       const pname = document.getElementById('parent-name').value.trim();
+      const email = document.getElementById('email').value.trim();
       const course = document.getElementById('course').value;
-      if (!name || !kana || !pname || !course) {
+      if (!name || !kana || !pname || !email || !course) {
         alert('必須項目をすべて入力してください。');
         return;
       }
     }
-
-    // 全ページ非表示
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.step-item').forEach(s => s.classList.remove('active'));
 
@@ -775,16 +385,14 @@
       document.getElementById('steps').style.display = 'none';
     } else {
       document.getElementById('page-' + page).classList.add('active');
-      // ステップ更新
       for (let i = 1; i <= 4; i++) {
         const el = document.getElementById('step-' + i);
+        if (!el) continue;
         if (i < page) { el.classList.add('done'); el.querySelector('.step-dot').textContent = '✓'; }
         else if (i === page) el.classList.add('active');
       }
-      // 確認ページの内容更新
       if (page === 4) updateConfirm();
     }
-
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -800,18 +408,127 @@
         canvas.height = img.height;
         canvas.getContext('2d').drawImage(img, 0, 0);
         const jpeg = canvas.toDataURL('image/jpeg', 0.92);
-        state[type] = jpeg.split(',')[1];
+        const base64 = jpeg.split(',')[1];
+        state[type] = base64;
+
         document.getElementById(type + '-img').src = jpeg;
         document.getElementById(type + '-preview').classList.add('visible');
         document.getElementById(type + '-zone').classList.add('has-file');
         document.getElementById(type + '-icon').textContent = '✓';
         document.getElementById(type + '-label').textContent = '画像を選択しました';
         document.getElementById(type + '-sub').textContent = file.name;
-        document.getElementById(type + '-next-btn').disabled = false;
+
+        if (type === 'passport') {
+          runPassportOCR(base64);
+        } else {
+          document.getElementById('transfer-next-btn').disabled = false;
+        }
       };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  async function runPassportOCR(base64) {
+    const resultBox = document.getElementById('ocr-result');
+    const statusText = document.getElementById('ocr-status-text');
+    const body = document.getElementById('ocr-body');
+    const alertBox = document.getElementById('expiry-alert');
+
+    resultBox.classList.add('visible');
+    statusText.innerHTML = '読み取り中<span class="dot-anim"></span>';
+    body.innerHTML = '<div class="ocr-loading">画像を解析しています...</div>';
+    alertBox.style.display = 'none';
+    document.getElementById('passport-next-btn').disabled = true;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': '',
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5',
+          max_tokens: 512,
+          system: 'You are a passport OCR. Return only valid JSON with no markdown, no backticks.',
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+              { type: 'text', text: 'Extract from this passport and return ONLY this JSON structure with actual values: {"name_romaji":"","date_of_birth":"YYYY-MM-DD","expiry_date":"YYYY-MM-DD","passport_number":"","readable":true}' }
+            ]
+          }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text || '';
+      let parsed;
+      try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); } catch(e) { parsed = null; }
+      if (parsed) {
+        showOCRResult(parsed);
+      } else {
+        document.getElementById('ocr-status-text').textContent = '読み取り完了';
+        body.innerHTML = '<div class="ocr-loading" style="color:var(--red)">読み取りに失敗しました。画像を撮り直してください。</div>';
+        document.getElementById('passport-next-btn').disabled = false;
+      }
+    } catch(e) {
+      // CORS等のエラーの場合はそのまま進めさせる
+      document.getElementById('ocr-status-text').textContent = 'スキップ（オフライン）';
+      body.innerHTML = '<div class="ocr-loading">読み取りをスキップしました</div>';
+      document.getElementById('passport-next-btn').disabled = false;
+    }
+  }
+
+  function showOCRResult(parsed) {
+    const statusText = document.getElementById('ocr-status-text');
+    const statusIcon = document.getElementById('ocr-status-icon');
+    const body = document.getElementById('ocr-body');
+    const alertBox = document.getElementById('expiry-alert');
+    const alertIcon = document.getElementById('expiry-alert-icon');
+    const alertText = document.getElementById('expiry-alert-text');
+
+    statusText.textContent = '読み取り完了 — 内容をご確認ください';
+    statusIcon.textContent = '✅';
+
+    const exp = parsed.expiry_date ? new Date(parsed.expiry_date) : null;
+    const now = new Date();
+    const sixMonths = new Date(now);
+    sixMonths.setMonth(sixMonths.getMonth() + 6);
+
+    let expiryClass = 'ok';
+    let expiryDisplay = parsed.expiry_date || '読み取れず';
+    if (!exp) { expiryClass = 'err'; }
+    else if (exp < now) { expiryClass = 'err'; expiryDisplay += '（期限切れ）'; }
+    else if (exp < sixMonths) { expiryClass = 'warn'; expiryDisplay += '（6ヶ月以内）'; }
+
+    body.innerHTML = `
+      <div class="ocr-row"><span class="ocr-key">氏名（ローマ字）</span><span class="ocr-val">${parsed.name_romaji || '—'}</span></div>
+      <div class="ocr-row"><span class="ocr-key">生年月日</span><span class="ocr-val">${parsed.date_of_birth || '—'}</span></div>
+      <div class="ocr-row"><span class="ocr-key">有効期限</span><span class="ocr-val ${expiryClass}">${expiryDisplay}</span></div>
+      <div class="ocr-row"><span class="ocr-key">パスポート番号</span><span class="ocr-val">${parsed.passport_number || '—'}</span></div>
+    `;
+
+    if (exp && exp < now) {
+      alertBox.className = 'alert-box err';
+      alertIcon.textContent = '⚠️';
+      alertText.textContent = 'パスポートの有効期限が切れています。渡航前に更新が必要です。事務局にご相談ください。';
+      alertBox.style.display = 'flex';
+      document.getElementById('passport-next-btn').disabled = true;
+    } else if (exp && exp < sixMonths) {
+      alertBox.className = 'alert-box warn';
+      alertIcon.textContent = '⚠️';
+      alertText.textContent = 'パスポートの有効期限が6ヶ月以内です。渡航できない可能性があります。事務局にご確認ください。';
+      alertBox.style.display = 'flex';
+      document.getElementById('passport-next-btn').disabled = false;
+    } else {
+      alertBox.className = 'alert-box ok';
+      alertIcon.textContent = '✅';
+      alertText.textContent = '有効期限の確認が取れました。次のステップへ進んでください。';
+      alertBox.style.display = 'flex';
+      document.getElementById('passport-next-btn').disabled = false;
+    }
   }
 
   function resetUpload(type) {
@@ -820,16 +537,26 @@
     document.getElementById(type + '-img').src = '';
     document.getElementById(type + '-preview').classList.remove('visible');
     document.getElementById(type + '-zone').classList.remove('has-file');
-    document.getElementById(type + '-icon').textContent = type === 'passport' ? '📷' : '📱';
-    document.getElementById(type + '-label').textContent = type === 'passport' ? 'タップして撮影・選択' : 'タップしてスクリーンショット選択';
-    document.getElementById(type + '-sub').textContent = type === 'passport' ? 'JPG・PNG・HEICに対応' : '振込名義・金額・日付が含まれる画面';
-    document.getElementById(type + '-next-btn').disabled = true;
+    if (type === 'passport') {
+      document.getElementById('passport-icon').textContent = '📷';
+      document.getElementById('passport-label').textContent = 'タップして撮影 / ライブラリから選択';
+      document.getElementById('passport-sub').textContent = 'JPG・PNG・HEICに対応';
+      document.getElementById('ocr-result').classList.remove('visible');
+      document.getElementById('expiry-alert').style.display = 'none';
+      document.getElementById('passport-next-btn').disabled = true;
+    } else {
+      document.getElementById('transfer-icon').textContent = '📱';
+      document.getElementById('transfer-label').textContent = 'タップして撮影 / ライブラリから選択';
+      document.getElementById('transfer-sub').textContent = '振込名義・金額・日付が含まれる画面';
+      document.getElementById('transfer-next-btn').disabled = true;
+    }
   }
 
   function updateConfirm() {
     document.getElementById('confirm-name').textContent =
-      document.getElementById('student-name').value + ' (' + document.getElementById('student-kana').value + ')';
+      document.getElementById('student-name').value + '（' + document.getElementById('student-kana').value + '）';
     document.getElementById('confirm-course').textContent = document.getElementById('course').value;
+    document.getElementById('confirm-email').textContent = document.getElementById('email').value;
   }
 
   function toggleAgree() {
@@ -863,7 +590,7 @@
     };
 
     try {
-      await fetch('https://hook.eu1.make.com/mgytkgcv6sr86qubz25h0v78qcxlo5d9', {
+      await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
