@@ -79,6 +79,11 @@
   .ocr-val.ok { color: var(--green); }
   .ocr-val.warn { color: var(--amber); }
   .ocr-val.err { color: var(--red); }
+  .ocr-input { width: 100%; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'DM Mono', monospace; color: var(--text-primary); background: var(--surface); outline: none; transition: border-color 0.2s; }
+  .ocr-input:focus { border-color: var(--border-focus); }
+  .ocr-input.warn { border-color: var(--amber); color: var(--amber); }
+  .ocr-input.err { border-color: var(--red); color: var(--red); }
+  .ocr-input.ok { border-color: var(--green); }
   .ocr-loading { padding: 16px; text-align: center; font-size: 13px; color: var(--text-secondary); }
 
   .alert-box { margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-sm); display: flex; gap: 10px; align-items: flex-start; }
@@ -488,10 +493,11 @@
     else if (exp < sixMonths) { expiryClass = 'warn'; expiryDisplay += '（6ヶ月以内）'; }
 
     body.innerHTML = `
-      <div class="ocr-row"><span class="ocr-key">氏名（ローマ字）</span><span class="ocr-val">${parsed.name_romaji || '—'}</span></div>
-      <div class="ocr-row"><span class="ocr-key">生年月日</span><span class="ocr-val">${parsed.date_of_birth || '—'}</span></div>
-      <div class="ocr-row"><span class="ocr-key">有効期限</span><span class="ocr-val ${expiryClass}">${expiryDisplay}</span></div>
-      <div class="ocr-row"><span class="ocr-key">パスポート番号</span><span class="ocr-val">${parsed.passport_number || '—'}</span></div>
+      <div class="ocr-row"><span class="ocr-key">氏名（ローマ字）</span><input class="ocr-input" id="ocr-name" value="${parsed.name_romaji || ''}" placeholder="読み取れず"></div>
+      <div class="ocr-row"><span class="ocr-key">生年月日</span><input class="ocr-input" id="ocr-dob" value="${parsed.date_of_birth || ''}" placeholder="YYYY-MM-DD"></div>
+      <div class="ocr-row"><span class="ocr-key">有効期限</span><input class="ocr-input ${expiryClass}" id="ocr-expiry" value="${parsed.expiry_date || ''}" placeholder="YYYY-MM-DD" oninput="checkExpiry(this.value)"></div>
+      <div class="ocr-row"><span class="ocr-key">パスポート番号</span><input class="ocr-input" id="ocr-passnum" value="${parsed.passport_number || ''}" placeholder="読み取れず"></div>
+      <div style="margin-top:10px; font-size:11px; color:var(--text-hint);">※ 読み取りが間違っている場合は直接修正してください</div>
     `;
 
     if (exp && exp < now) {
@@ -509,6 +515,40 @@
     } else {
       alertBox.className = 'alert-box ok';
       alertIcon.textContent = '✅';
+      alertText.textContent = '有効期限の確認が取れました。次のステップへ進んでください。';
+      alertBox.style.display = 'flex';
+      document.getElementById('passport-next-btn').disabled = false;
+    }
+  }
+
+  function checkExpiry(val) {
+    const alertBox = document.getElementById('expiry-alert');
+    const alertIcon = document.getElementById('expiry-alert-icon');
+    const alertText = document.getElementById('expiry-alert-text');
+    const input = document.getElementById('ocr-expiry');
+    const exp = val ? new Date(val) : null;
+    const now = new Date();
+    const sixMonths = new Date(now);
+    sixMonths.setMonth(sixMonths.getMonth() + 6);
+
+    input.className = 'ocr-input';
+    if (!exp || isNaN(exp)) { alertBox.style.display = 'none'; document.getElementById('passport-next-btn').disabled = false; return; }
+
+    if (exp < now) {
+      input.classList.add('err');
+      alertBox.className = 'alert-box err'; alertIcon.textContent = '⚠️';
+      alertText.textContent = 'パスポートの有効期限が切れています。渡航前に更新が必要です。事務局にご相談ください。';
+      alertBox.style.display = 'flex';
+      document.getElementById('passport-next-btn').disabled = true;
+    } else if (exp < sixMonths) {
+      input.classList.add('warn');
+      alertBox.className = 'alert-box warn'; alertIcon.textContent = '⚠️';
+      alertText.textContent = 'パスポートの有効期限が6ヶ月以内です。渡航できない可能性があります。事務局にご確認ください。';
+      alertBox.style.display = 'flex';
+      document.getElementById('passport-next-btn').disabled = false;
+    } else {
+      input.classList.add('ok');
+      alertBox.className = 'alert-box ok'; alertIcon.textContent = '✅';
       alertText.textContent = '有効期限の確認が取れました。次のステップへ進んでください。';
       alertBox.style.display = 'flex';
       document.getElementById('passport-next-btn').disabled = false;
