@@ -351,6 +351,7 @@
   // ================================================================
 
   const WEBHOOK_URL = 'https://hook.eu1.make.com/mgytkgcv6sr86qubz25h0v78qcxlo5d9';
+  const OCR_WEBHOOK_URL = 'https://hook.eu1.make.com/vm9znq5zn1n79cm5jscg3sddmbahgegd';
 
   const state = { passport: null, transfer: null, agreed: false };
 
@@ -442,28 +443,12 @@
     document.getElementById('passport-next-btn').disabled = true;
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(OCR_WEBHOOK_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': '',
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 512,
-          system: 'You are a passport OCR. Return only valid JSON with no markdown, no backticks.',
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
-              { type: 'text', text: 'Extract from this passport and return ONLY this JSON structure with actual values: {"name_romaji":"","date_of_birth":"YYYY-MM-DD","expiry_date":"YYYY-MM-DD","passport_number":"","readable":true}' }
-            ]
-          }]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passport_image: base64 })
       });
-      const data = await res.json();
-      const text = data.content?.[0]?.text || '';
+      const text = await res.text();
       let parsed;
       try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); } catch(e) { parsed = null; }
       if (parsed) {
@@ -474,9 +459,8 @@
         document.getElementById('passport-next-btn').disabled = false;
       }
     } catch(e) {
-      // CORS等のエラーの場合はそのまま進めさせる
-      document.getElementById('ocr-status-text').textContent = 'スキップ（オフライン）';
-      body.innerHTML = '<div class="ocr-loading">読み取りをスキップしました</div>';
+      document.getElementById('ocr-status-text').textContent = 'エラーが発生しました';
+      body.innerHTML = '<div class="ocr-loading" style="color:var(--red)">通信エラーです。時間をおいて再試行してください。</div>';
       document.getElementById('passport-next-btn').disabled = false;
     }
   }
