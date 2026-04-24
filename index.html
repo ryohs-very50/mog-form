@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>書類提出 | MoGプログラム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E4E2DA;
+    --border-focus: #1A1A1A;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6A65;
+    --text-hint: #A8A7A2;
+    --accent: #1A1A1A;
+    --accent-light: #F0EFE9;
+    --green: #1D9E75;
+    --green-bg: #E1F5EE;
+    --amber: #BA7517;
+    --amber-bg: #FAEEDA;
+    --red: #A32D2D;
+    --red-bg: #FCEBEB;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ヘッダー */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .header-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-mark span {
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .header-text h1 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .header-text p {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 1px;
+  }
+
+  /* ステップインジケーター */
+  .steps {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    position: relative;
+  }
+
+  .step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .step-item.done:not(:last-child)::after { background: var(--green); }
+
+  .step-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-hint);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .step-item.active .step-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .step-item.done .step-dot {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+    font-size: 12px;
+  }
+
+  .step-label {
+    font-size: 10px;
+    color: var(--text-hint);
+    white-space: nowrap;
+  }
+
+  .step-item.active .step-label { color: var(--text-primary); font-weight: 500; }
+  .step-item.done .step-label { color: var(--green); }
+
+  /* メインコンテンツ */
+  .main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* カード */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .card-header {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .card-body { padding: 18px; }
+
+  /* アップロードゾーン */
+  .upload-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .upload-zone:active { background: var(--accent-light); border-color: var(--accent); }
+  .upload-zone.has-file { border-style: solid; border-color: var(--green); background: var(--green-bg); }
+  .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+  .upload-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.2s;
+  }
+
+  .has-file .upload-icon {
+    background: var(--green);
+    border-color: var(--green);
+    font-size: 16px;
+  }
+
+  .upload-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .upload-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .has-file .upload-label { color: var(--green); }
+
+  /* プレビュー */
+  .preview-area {
+    display: none;
+    margin-top: 12px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .preview-area.visible { display: block; }
+
+  .preview-area img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .preview-change {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+
+  /* ヒントボックス */
+  .hint-box {
+    background: var(--amber-bg);
+    border: 1px solid #FAC775;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .hint-box-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  .hint-box-text {
+    font-size: 12px;
+    color: var(--amber);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  /* テキストフィールド */
+  .field-group { margin-bottom: 16px; }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .field-required {
+    display: inline-block;
+    font-size: 10px;
+    background: var(--red-bg);
+    color: var(--red);
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .field-input:focus { border-color: var(--border-focus); }
+  .field-input::placeholder { color: var(--text-hint); }
+
+  /* 区切り線 */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  /* 情報確認セクション */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+
+  .info-key {
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+
+  .info-val {
+    font-size: 13px;
+    font-weight: 500;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .info-val.ok { color: var(--green); }
+  .info-val.warn { color: var(--amber); }
+  .info-val.err { color: var(--red); }
+
+  /* 同意チェック */
+  .agree-box {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+
+  .agree-box.checked { border-color: var(--green); background: var(--green-bg); }
+
+  .agree-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    background: var(--surface);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: transparent;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+
+  .agree-box.checked .agree-checkbox {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .agree-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .agree-text strong { color: var(--text-primary); }
+
+  /* 送信ボタン */
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+
+  .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+  .btn-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    margin-top: 10px;
+    -webkit-appearance: none;
+  }
+
+  /* ページ管理 */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* 完了画面 */
+  .complete-hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+
+  .complete-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--green-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+  }
+
+  .complete-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+
+  .complete-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .complete-number {
+    font-family: 'DM Mono', monospace;
+    background: var(--accent-light);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .complete-number-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .complete-number-val {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+
+  /* アニメーション */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page.active > * {
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .page.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .page.active > *:nth-child(3) { animation-delay: 0.1s; }
+  .page.active > *:nth-child(4) { animation-delay: 0.15s; }
+
+  /* セーフエリア対応 */
+  .bottom-pad { height: env(safe-area-inset-bottom, 16px); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-mark"><span>MoG</span></div>
+    <div class="header-text">
+      <h1>書類提出フォーム</h1>
+      <p>very50 MoGプログラム 2026</p>
+    </div>
+  </div>
+</div>
+
+<!-- ステップインジケーター -->
+<div class="steps" id="steps">
+  <div class="step-item active" id="step-1">
+    <div class="step-dot">1</div>
+    <div class="step-label">基本情報</div>
+  </div>
+  <div class="step-item" id="step-2">
+    <div class="step-dot">2</div>
+    <div class="step-label">パスポート</div>
+  </div>
+  <div class="step-item" id="step-3">
+    <div class="step-dot">3</div>
+    <div class="step-label">振込明細</div>
+  </div>
+  <div class="step-item" id="step-4">
+    <div class="step-dot">4</div>
+    <div class="step-label">確認・送信</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ページ1: 基本情報 -->
+  <div class="page active" id="page-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👤</div>
+        <div>
+          <div class="card-title">基本情報の入力</div>
+          <div class="card-desc">生徒のお名前と参加プログラムを確認してください</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <label class="field-label">生徒氏名（漢字）<span class="field-required">必須</span></label>
+          <input class="field-input" type="text" id="student-name" placeholder="例：山田 太郎" inputmode="text">
+        </div>
+        <div class="field-group">
+          <label class="field-label">生徒氏名（カナ）<span class="field-required">必須</span></label>
+          <input class="field-input" type="text" id="student-kana" placeholder="例：ヤマダ タロウ" inputmode="text">
+        </div>
+        <div class="field-group">
+          <label class="field-label">保護者氏名（漢字）<span class="field-required">必須</span></label>
+          <input class="field-input" type="text" id="parent-name" placeholder="例：山田 花子" inputmode="text">
+        </div>
+        <div class="field-group">
+          <label class="field-label">連絡先メールアドレス</label>
+          <input class="field-input" type="email" id="email" placeholder="example@email.com" inputmode="email">
+        </div>
+        <div class="field-group">
+          <label class="field-label">参加コース<span class="field-required">必須</span></label>
+          <select class="field-input" id="course">
+            <option value="">選択してください</option>
+            <option>フィリピン（セブ島）</option>
+            <option>マレーシア（クアラルンプール）</option>
+            <option>シンガポール</option>
+            <option>カンボジア（プノンペン）</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="goTo(2)">次へ：パスポートの提出</button>
+  </div>
+
+  <!-- ページ2: パスポート -->
+  <div class="page" id="page-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🛂</div>
+        <div>
+          <div class="card-title">パスポートの撮影</div>
+          <div class="card-desc">顔写真ページ（氏名・生年月日・有効期限が記載されているページ）を撮影してください</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <label class="upload-zone" id="passport-zone">
+          <input type="file" accept="image/*" capture="environment" id="passport-file" onchange="handleUpload(event,'passport')">
+          <div class="upload-icon" id="passport-icon">📷</div>
+          <div class="upload-label" id="passport-label">タップして撮影・選択</div>
+          <div class="upload-sub" id="passport-sub">JPG・PNG・HEICに対応</div>
+        </label>
+        <div class="preview-area" id="passport-preview">
+          <img id="passport-img" src="" alt="パスポートプレビュー">
+          <button class="preview-change" onclick="resetUpload('passport')">撮り直す</button>
+        </div>
+        <div class="hint-box">
+          <div class="hint-box-icon">💡</div>
+          <div class="hint-box-text">
+            光が反射しないよう、明るい場所で真上から撮影してください。文字が読める鮮明な画像をお願いします。
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-submit" id="passport-next-btn" onclick="goTo(3)" disabled>次へ：振込明細の提出</button>
+    <button class="btn-secondary" onclick="goTo(1)">戻る</button>
+  </div>
+
+  <!-- ページ3: 振込明細 -->
+  <div class="page" id="page-3">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🏦</div>
+        <div>
+          <div class="card-title">振込明細の提出</div>
+          <div class="card-desc">銀行アプリの振込完了画面または通帳のスクリーンショットをアップロードしてください</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <label class="upload-zone" id="transfer-zone">
+          <input type="file" accept="image/*" capture="environment" id="transfer-file" onchange="handleUpload(event,'transfer')">
+          <div class="upload-icon" id="transfer-icon">📱</div>
+          <div class="upload-label" id="transfer-label">タップしてスクリーンショット選択</div>
+          <div class="upload-sub" id="transfer-sub">振込名義・金額・日付が含まれる画面</div>
+        </label>
+        <div class="preview-area" id="transfer-preview">
+          <img id="transfer-img" src="" alt="振込明細プレビュー">
+          <button class="preview-change" onclick="resetUpload('transfer')">選び直す</button>
+        </div>
+        <div class="hint-box">
+          <div class="hint-box-icon">💡</div>
+          <div class="hint-box-text">
+            振込名義・金額・取引日が確認できる画面を提出してください。銀行アプリの明細詳細画面が最適です。
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-submit" id="transfer-next-btn" onclick="goTo(4)" disabled>次へ：内容確認</button>
+    <button class="btn-secondary" onclick="goTo(2)">戻る</button>
+  </div>
+
+  <!-- ページ4: 確認・送信 -->
+  <div class="page" id="page-4">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">✅</div>
+        <div>
+          <div class="card-title">提出内容の確認</div>
+          <div class="card-desc">以下の内容で提出します。送信後は修正できません。</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row">
+          <div class="info-key">生徒氏名</div>
+          <div class="info-val" id="confirm-name">—</div>
+        </div>
+        <div class="info-row">
+          <div class="info-key">参加コース</div>
+          <div class="info-val" id="confirm-course">—</div>
+        </div>
+        <div class="info-row">
+          <div class="info-key">パスポート</div>
+          <div class="info-val ok" id="confirm-passport">提出済み ✓</div>
+        </div>
+        <div class="info-row">
+          <div class="info-key">振込明細</div>
+          <div class="info-val ok" id="confirm-transfer">提出済み ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="agree-box" id="agree-box" onclick="toggleAgree()">
+      <div class="agree-checkbox" id="agree-check">✓</div>
+      <div class="agree-text">
+        提出した画像は<strong>very50事務局のみ</strong>が確認します。個人情報は本プログラムの運営目的以外には使用しません。上記に同意して送信します。
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submit-btn" onclick="submitForm()" disabled>送信する</button>
+    <button class="btn-secondary" onclick="goTo(3)">戻る</button>
+  </div>
+
+  <!-- 完了ページ -->
+  <div class="page" id="page-complete">
+    <div class="complete-hero">
+      <div class="complete-icon">🎉</div>
+      <div class="complete-title">提出が完了しました</div>
+      <div class="complete-desc">書類を受け付けました。<br>very50事務局で内容を確認後、<br>LINEにてご連絡します。</div>
+      <div class="complete-number">
+        <div class="complete-number-label">受付番号</div>
+        <div class="complete-number-val" id="receipt-number">—</div>
+      </div>
+      <div class="complete-desc" style="font-size:12px; color: #A8A7A2;">
+        ※ 通常3営業日以内にご連絡します<br>
+        ※ 不備があった場合はLINEで個別にご連絡します
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="bottom-pad"></div>
+
+<script>
+  const state = {
+    passport: null,
+    transfer: null,
+    agreed: false
+  };
+
+  function goTo(page) {
+    // 入力チェック（ページ1）
+    if (page === 2) {
+      const name = document.getElementById('student-name').value.trim();
+      const kana = document.getElementById('student-kana').value.trim();
+      const pname = document.getElementById('parent-name').value.trim();
+      const course = document.getElementById('course').value;
+      if (!name || !kana || !pname || !course) {
+        alert('必須項目をすべて入力してください。');
+        return;
+      }
+    }
+
+    // 全ページ非表示
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.step-item').forEach(s => s.classList.remove('active'));
+
+    if (page === 'complete') {
+      document.getElementById('page-complete').classList.add('active');
+      document.getElementById('steps').style.display = 'none';
+    } else {
+      document.getElementById('page-' + page).classList.add('active');
+      // ステップ更新
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('step-' + i);
+        if (i < page) { el.classList.add('done'); el.querySelector('.step-dot').textContent = '✓'; }
+        else if (i === page) el.classList.add('active');
+      }
+      // 確認ページの内容更新
+      if (page === 4) updateConfirm();
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handleUpload(e, type) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      state[type] = ev.target.result;
+      document.getElementById(type + '-img').src = ev.target.result;
+      document.getElementById(type + '-preview').classList.add('visible');
+      document.getElementById(type + '-zone').classList.add('has-file');
+      document.getElementById(type + '-icon').textContent = '✓';
+      document.getElementById(type + '-label').textContent = '画像を選択しました';
+      document.getElementById(type + '-sub').textContent = file.name;
+      document.getElementById(type + '-next-btn').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetUpload(type) {
+    state[type] = null;
+    document.getElementById(type + '-file').value = '';
+    document.getElementById(type + '-img').src = '';
+    document.getElementById(type + '-preview').classList.remove('visible');
+    document.getElementById(type + '-zone').classList.remove('has-file');
+    document.getElementById(type + '-icon').textContent = type === 'passport' ? '📷' : '📱';
+    document.getElementById(type + '-label').textContent = type === 'passport' ? 'タップして撮影・選択' : 'タップしてスクリーンショット選択';
+    document.getElementById(type + '-sub').textContent = type === 'passport' ? 'JPG・PNG・HEICに対応' : '振込名義・金額・日付が含まれる画面';
+    document.getElementById(type + '-next-btn').disabled = true;
+  }
+
+  function updateConfirm() {
+    document.getElementById('confirm-name').textContent =
+      document.getElementById('student-name').value + ' (' + document.getElementById('student-kana').value + ')';
+    document.getElementById('confirm-course').textContent = document.getElementById('course').value;
+  }
+
+  function toggleAgree() {
+    state.agreed = !state.agreed;
+    document.getElementById('agree-box').classList.toggle('checked', state.agreed);
+    document.getElementById('submit-btn').disabled = !state.agreed;
+  }
+
+  function generateReceiptNumber() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return 'MOG-' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + '-' + Math.floor(Math.random() * 9000 + 1000);
+  }
+
+  function submitForm() {
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').textContent = '送信中...';
+
+    // ここでMakeのWebhook URLにPOSTする（本番実装時）
+    // fetch('https://hook.make.com/YOUR_WEBHOOK', { method: 'POST', body: formData })
+
+    // デモ：1.5秒後に完了画面へ
+    setTimeout(() => {
+      document.getElementById('receipt-number').textContent = generateReceiptNumber();
+      goTo('complete');
+    }, 1500);
+  }
+</script>
+</body>
+</html>
