@@ -611,6 +611,10 @@
       course: document.getElementById('course').value,
       passport_image: state.passport || null,
       transfer_image: state.transfer || null,
+      ocr_name: document.getElementById('ocr-name') ? document.getElementById('ocr-name').value : '',
+      ocr_dob: document.getElementById('ocr-dob') ? document.getElementById('ocr-dob').value : '',
+      ocr_expiry: document.getElementById('ocr-expiry') ? document.getElementById('ocr-expiry').value : '',
+      ocr_passnum: document.getElementById('ocr-passnum') ? document.getElementById('ocr-passnum').value : '',
     };
 
     try {
